@@ -36,7 +36,7 @@ ssh and tidal data, each structured as follows:
 | `ssh`      | b × 72              | Past SSH.                                                                                                                                                                                        |
 | `tide`     | b × 144             | Past and future tide.                                                                                                                                                                            |
 
-Here b stands for batch dimension. The model outputs 72 points representing hourly sea level forecast.
+Here `b` stands for batch dimension. The model outputs 72 points representing hourly sea level forecast.
 
 All inputs and output of HIDRA2 are normalized, the statistics are stored in `data/data normalization parameters.yaml`.
 
