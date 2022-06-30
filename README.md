@@ -6,7 +6,7 @@
 
 HIDRA2 is a state-of-the-art deep neural model for sea-level prediction based on past sea level observations and future tidal and atmospheric forecasts.
 
-![Qualitative example of sea level predictions (compared with NEMO, from 2020/10/14).](./images/qualitative example, 2020-10-14 00_00_00.png)
+![Qualitative example of sea level predictions (compared with NEMO, from 2020/10/14).](./images/qualitative_example-2020-10-14.png)
 
 
 ## Setup
