@@ -1,4 +1,4 @@
-# HIDRA2: Deep-Learning Ensemble Sea Level Modeling Method in the Northern Adriatic
+# HIDRA2: Deep-Learning Ensemble Sea Level Modeling in the Northern Adriatic
 
 <p align="center">
     <img src="images/logo.png" alt="HIDRA logo" width="300px">
