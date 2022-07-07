@@ -1,4 +1,4 @@
-# HIDRA2: Deep-Learning Ensemble Storm Surge Forecasting in the Presence of Seiches -- the Case of Northern Adriatic
+## HIDRA2: Deep-Learning Ensemble Storm Surge Forecasting in the Presence of Seiches – the Case of Northern Adriatic
 
 <p align="center">
     <img src="images/logo.png" alt="HIDRA logo" width="300px">
@@ -9,14 +9,14 @@ HIDRA2 is a state-of-the-art deep neural model for sea-level prediction based on
 ![Qualitative example of sea level predictions (compared with NEMO, from 2020/10/14).](./images/qualitative_example-2020-10-14.png)
 
 
-## Setup
+### Setup
 
 To install the required packages, run
 ```
 pip3 install -r requirements.txt
 ```
 
-## Usage
+### Usage
 
 This repository contains the implementation of HIDRA2, which can be inspected in file `src/hidra2/hidra2.py`, and parameters
 of the pretrained model trained on 2006-2018. To load the pretrained model, perform one forward pass and visualize the
