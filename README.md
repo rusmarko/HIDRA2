@@ -49,9 +49,9 @@ cd src
 python3 train.py
 ```
 
-File `data/training data example.pt` showcases the format used for training data. It contains a dictionary with 6 elements,`times`, `weather`, 
-`tide`, `ssh`, `valid_i` and `norm`. `norm` are contains normalization coefficients, `weather`, `tide` and `ssh` are tensors of an equal size,
-datapoint at some index belongs to time defined in `times`. For a range to be valid, all points from 72 h before and after
+File `data/training data example.pt` showcases the format used for training data. It contains a dictionary with six elements,`times`, `weather`, 
+`tide`, `ssh`, `valid_i` and `norm`. `norm` contains normalization coefficients, `weather`, `tide` and `ssh` are tensors of an equal size,
+where a datapoint at some index belongs to the time defined in `times`. For a range to be valid, all points from 72 h before and after
 the prediction point need to be defined, `valid_i` contains those valid indexes of predictions points.
 
 The format of `weather`, `ssh` and `tide` is as folows: 
