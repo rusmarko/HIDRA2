@@ -16,7 +16,7 @@ To install the required packages, run
 pip3 install -r requirements.txt
 ```
 
-### Usage
+### Loading the Pretrained Model
 
 This repository contains the implementation of HIDRA2, which can be inspected in file `src/hidra2/hidra2.py`, and parameters
 of the pretrained model trained on 2006-2018. To load the pretrained model, perform one forward pass and visualize the
@@ -40,3 +40,26 @@ Here `b` stands for batch dimension. The model outputs 72 points representing ho
 
 All inputs and output of HIDRA2 are normalized, the statistics are stored in `data/data normalization parameters.yaml`.
 
+### Training the Model
+
+To train the model, firstly add the training data to `data` folder and change parameters in `src/train.py`. Then, run
+
+```
+cd src
+python3 train.py
+```
+
+File `data/training data example.pt` showcases the format used for training data. It contains a dictionary with 6 elements,`times`, `weather`, 
+`tide`, `ssh`, `valid_i` and `norm`. `norm` are contains normalization coefficients, `weather`, `tide` and `ssh` are tensors of an equal size,
+datapoint at some index belongs to time defined in `times`. For a range to be valid, all points from 72 h before and after
+the prediction point need to be defined, `valid_i` contains those valid indexes of predictions points.
+
+The format of `weather`, `ssh` and `tide` is as folows: 
+
+| Field name | Shape           | Description                                                                                                                                        |
+|------------|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `weather`  | N × 4 × 28 × 36 | Hourly atmospheric forecasts. Second dimension contains pressure, two channels of wind, and temperature. Last two dimensions are height and width. |
+| `ssh`      | N               | SSH.                                                                                                                                               |
+| `tide`     | N               | Tide.                                                                                                                                              |
+
+where `N` represents the number of hourly datapoints in the training dataset.
