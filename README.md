@@ -12,11 +12,6 @@ predictions for all 50 ensembles on Jun 2019 – Dec 2020.
 
 ![Qualitative example of sea level predictions (compared with NEMO, from 2020/10/14).](./images/qualitative_example-2020-10-14.png)
 
-### Training and Evaluation Datasets
-
-We publish the entire training and evaluation datasets for HIDRA2 at [this link](https://doi.org/10.5281/zenodo.7123910). To run
-the following experiments, place the files into the `data` folder.
-
 ### Setup
 
 To install the required packages, run
@@ -25,10 +20,26 @@ To install the required packages, run
 pip3 install -r requirements.txt
 ```
 
+### Evaluation
+
+Predictions of HIDRA2 on Jun 2019 – Dec 2020 are stored in the `data` folder.
+To evaluate them, run
+
+```
+python3 eval.py
+```
+
+To recalculate the predictions, download the test data from [this link](https://doi.org/10.5281/zenodo.7123910)
+and run
+
+```
+python3 test.py
+```
+
 ### Training
 
 Pretrained weights are available in the `data` folder. To retrain the model, download
-the training data and run
+the training data from [this link](https://doi.org/10.5281/zenodo.7123910) and run
 
 ```
 python3 train.py
@@ -36,24 +47,9 @@ python3 train.py
 
 The code will train the model on 2006 – 2018 data and save the trained model to the `data` folder.
 
-### Evaluation
-
-Predictions of HIDRA2 on Jun 2019 – Dec 2020 are already stored in the `data` folder. 
-To recalculate them, run
-
-```
-python3 test.py
-```
-
-To evaluate the predictions, run
-
-```
-python3 eval.py
-```
-
 ### Structure of the Data
 
-Inputs to the HIDRA2 model are atmospheric, ssh and tidal data, each structured as follows:
+Inputs to the HIDRA2 model are atmospheric, SSH and tidal data, each structured as follows:
 
 | Name    | Shape   | Description                                                                                                                                                                                       |
 |---------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
