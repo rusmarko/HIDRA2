@@ -4,7 +4,7 @@ ssh:
 tide:
   mean: 219.00177001953125
   std: 27.540185928344727
-weather:
+atmos:
   mean:
   - 101577.140625  # pressure (msl)
   - -0.11382666230201721  # wind (u10)

@@ -62,64 +62,64 @@ class HIDRA(nn.Module):
         ])
         self.final = nn.Linear(512 + 72, 72)
 
-    def forward(self, weather, ssh, tide):
+    def forward(self, atmos, ssh, tide):
         """
-        :param weather: 2 96 3 9 12 (batch size, time, type, height, width)
-        :param ssh: 2 72
-        :param tide: 2 144
+        :param atmos: b 96 3 9 12 (batch size, time, type, height, width)
+        :param ssh: b 72
+        :param tide: b 144
         """
 
-        batch_size = weather.shape[0]
+        batch_size = atmos.shape[0]
 
         # atmosphere batched
-        x = weather.view(batch_size * 24, 4, 3, *weather.shape[-2:])  # 2x24 4 3 9 12
-        y1 = self.wind(x[:, :, 1:].reshape(batch_size * 24, 4 * 2, *weather.shape[-2:]))  # 2x24 512 1 1
-        y2 = self.pressure(x[:, :, 0])  # 2x24 512 1 1
-        y = torch.cat((y1, y2), dim=1)  # 2x24 1024 1 1
-        x = y.view(batch_size, 24, 1024)  # 2 24 1024
+        x = atmos.reshape(batch_size * 24, 4, 3, *atmos.shape[-2:])  # bx24 4 3 9 12
+        y1 = self.wind(x[:, :, 1:].reshape(batch_size * 24, 4 * 2, *atmos.shape[-2:]))  # bx24 512 1 1
+        y2 = self.pressure(x[:, :, 0])  # bx24 512 1 1
+        y = torch.cat((y1, y2), dim=1)  # bx24 1024 1 1
+        x = y.view(batch_size, 24, 1024)  # b 24 1024
 
         # atmosphere temporal
-        x = x.permute(0, 2, 1)  # 2 1024 24
-        x = self.atmos_temporal(x)  # 2 256 20
+        x = x.permute(0, 2, 1)  # b 1024 24
+        x = self.atmos_temporal(x)  # b 256 20
         for layer in self.atmos:
             x = x + layer(x)
-        x = self.atmos_final(x)  # 2 32 20
-        x = x.view(batch_size, -1)  # 2 640
-        weather_features = self.atmos_bn(x.unsqueeze(1)).squeeze(1)  # 2 640
+        x = self.atmos_final(x)  # b 32 20
+        x = x.view(batch_size, -1)  # b 640
+        weather_features = self.atmos_bn(x.unsqueeze(1)).squeeze(1)  # b 640
 
         # tide
-        x = self.tide_temporal(tide[:, -72:].unsqueeze(1))  # 2 256 35
+        x = self.tide_temporal(tide[:, -72:].unsqueeze(1))  # b 256 35
         for layer in self.tide:
             x = x + layer(x)
-        x = self.tide_final(x)  # 2 16 17
-        x = x.view(batch_size, -1)  # 2 272
-        tide_features = self.tide_bn(x.unsqueeze(1)).squeeze(1)  # 2 272
+        x = self.tide_final(x)  # b 16 17
+        x = x.view(batch_size, -1)  # b 272
+        tide_features = self.tide_bn(x.unsqueeze(1)).squeeze(1)  # b 272
 
         # ssh
         x = torch.cat((
             tide[:, :72].unsqueeze(1),
             ssh.unsqueeze(1),
-        ), dim=1)  # 2 2 72
-        x = self.ssh_temporal(x)  # 2 256 35
+        ), dim=1)  # b 2 72
+        x = self.ssh_temporal(x)  # b 256 35
         for layer in self.ssh:
             x = x + layer(x)
-        x = self.ssh_final(x)  # 2 16 17
-        x = x.view(batch_size, -1)  # 2 272
-        ssh_features = self.ssh_bn(x.unsqueeze(1)).squeeze(1)  # 2 272
+        x = self.ssh_final(x)  # b 16 17
+        x = x.view(batch_size, -1)  # b 272
+        ssh_features = self.ssh_bn(x.unsqueeze(1)).squeeze(1)  # b 272
 
         # regression
         x = torch.cat((
             weather_features,
             tide_features,
             ssh_features,
-        ), 1)  # 2 1184
-        x = self.reduce_dim(x)  # 2 512
+        ), 1)  # b 1184
+        x = self.reduce_dim(x)  # b 512
         x = torch.cat((
             x,
             ssh,
-        ), 1)  # 2 512+72
+        ), 1)  # b 512+72
         for layer in self.regression:
             x = x + layer(x)
-        y = self.final(x)  # 2 72
+        y = self.final(x)  # b 72
 
         return y

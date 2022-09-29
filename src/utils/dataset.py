@@ -1,75 +1,48 @@
-from utils.root import *
+import torch
+import yaml
+from torch.utils.data import Dataset, DataLoader
 
 
-class CustomDataset(Dataset):
-    def __init__(self, config, subset, output_index=False):
-        super(CustomDataset, self).__init__()
+class Train(Dataset):
+    def __init__(self, config, norm):
+        super(Train, self).__init__()
 
-        self.subset = subset
-        self.output_index = output_index
-
-        print('Reading data.')
-
-        data = torch.load(config.dataset_path)
-        self.weather = data['weather']
+        data = torch.load(f'{config.data_path}/train.pth')
+        self.atmos = data['atmos']
         self.tide = data['tide']
         self.ssh = data['ssh']
-        self.times = data['times']
-        self.valid_i = []
-        self.norm = data['norm']
+        self.valid_idx = data['valid idx']
 
-        # subsample weather
-        s = 3
-        self.weather = F.conv2d(self.weather, torch.ones(4, 1, s, s) / (s * s), groups=4, stride=s)
+        # normalizing
+        self.atmos[:, 0] = (self.atmos[:, 0] - norm['atmos']['mean'][0]) / norm['atmos']['std'][0]
+        self.atmos[:, 1] = (self.atmos[:, 1] - norm['atmos']['mean'][1]) / norm['atmos']['std'][1]
+        self.atmos[:, 2] = (self.atmos[:, 2] - norm['atmos']['mean'][2]) / norm['atmos']['std'][2]
+        self.tide = (self.tide - norm['tide']['mean']) / norm['tide']['std']
+        self.ssh = (self.ssh - norm['ssh']['mean']) / norm['ssh']['std']
 
-        # remove T
-        self.weather = self.weather[:, :3]
-
-        if subset == 'train':
-            a = pd.to_datetime(config.train_params['range'][0])
-            b = pd.to_datetime(config.train_params['range'][1])
-        else:
-            raise
-        if a is None:
-            a = pd.Timestamp.min
-        if b is None:
-            b = pd.Timestamp.max
-
-        for i in data['valid_i']:
-            if a <= self.times[i] <= b:
-                self.valid_i.append(i)
-
-        print(f'{subset} set: {len(self.valid_i)} instances.')
+        print(f'{len(self.valid_idx)} train instances.')
 
     def __len__(self):
-        return len(self.valid_i)
+        return len(self.valid_idx)
 
     def __getitem__(self, i):
-        i = self.valid_i[i]
-
-        # checking time
-        times = self.times[i - 72:i + 72]
-        for t in range(1, len(times)):
-            a = times[t - 1]
-            b = times[t]
-            assert (b - a).seconds == 3600
+        i = self.valid_idx[i]
 
         ssh = self.ssh[i - 72:i]
         tide = self.tide[i - 72:i + 72]
 
         lbl_ssh = self.ssh[i:i + 72]
 
-        weather = self.weather[i - 24:i + 72]
+        atmos = self.atmos[i - 24:i + 72]
 
-        if self.output_index:
-            return weather, ssh, tide, lbl_ssh, torch.tensor(i)
-        return weather, ssh, tide, lbl_ssh
+        return atmos, ssh, tide, lbl_ssh
 
 
 class Data:
-    def __init__(self, config, train=True, output_index=False):
-        if train:
-            self.train_lister = CustomDataset(config, subset='train', output_index=output_index)
-            self.train = DataLoader(self.train_lister, batch_size=config.batch_size, num_workers=config.num_workers,
-                                    pin_memory=True, drop_last=False, shuffle=True)
-            self.norm = self.train_lister.norm
+    def __init__(self, config):
+        with open(f'{config.data_path}/data normalization parameters.yaml') as file:
+            self.norm = yaml.safe_load(file)
+
+        self.train_lister = Train(config, self.norm)
+        self.train = DataLoader(self.train_lister, batch_size=config.batch_size, num_workers=config.num_workers,
+                                pin_memory=True, drop_last=False, shuffle=True)
