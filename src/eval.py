@@ -81,8 +81,8 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
     :param ssh: Dict containing hourly SSH measurements of all predicted time points.
     :param predictions: Dict containing predictions in the format:
             {day: {'predictions': tensor of #ensemblesx72 elements}, ...}.
-    :param window: Window in hours which is a minimal distance between two instances to be considered
-            two different detections of floods.
+    :param window: Half the window size in hours which is a minimal distance between two points to be considered
+            two different instances of floods.
     :param tolerance: If prediction lies within the tolerance of ground truth (in cm), it is
             considered for the flood to be detected properly, even if prediction is below `floods_thr`.
     :param floods_thr: Local maximum of the SSH signal to be considered flood if above or equal to it (in cm).
@@ -123,7 +123,7 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
         # Finding local maximums in the predicted signal.
         pred_peaks = {}
         pred_peaks_i = {}
-        for i in range(1, 71):  # Local maximum cannot be at the interval extremes.
+        for i in range(1, 71):  # Local maximum cannot be detected at the interval extremes.
             time_temp = time + pd.to_timedelta(i, 'H')
             a = max(0, i - window)
             b = min(72, i + window + 1)
@@ -132,7 +132,7 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
                 pred_peaks_i[time_temp] = i
         gt_peaks = {}
         gt_peaks_i = {}
-        for i in range(-2 * window, 72 + 2 * window):  # Looking also around the prediction horizon
+        for i in range(-2 * window, 72 + 2 * window):  # Looking also around the prediction horizon (important for FP).
             time_temp = time + pd.to_timedelta(i, 'H')
             if time_temp in peaks:
                 gt_peaks[time_temp] = ssh[time_temp]
@@ -143,8 +143,8 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
             if not (time <= peak < time + pd.to_timedelta(72, 'H')) or \
                     gt_peaks[peak] < floods_thr:  # Here looking only at the peaks in the prediction horizon.
                 continue
-            # We now have flood in the ground truth, which is either TP of FN.
 
+            # We now have flood in the ground truth, which is either TP or FN.
             is_in_pred = False
             thr = min(gt_peaks[peak] - tolerance, floods_thr)
             for i in range(-window, window + 1):
@@ -162,7 +162,7 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
                     if torch.max(pred[a:b]) >= thr:
                         is_in_pred = True
 
-            # Flood is either TP of FN.
+            # Flood is either TP or FN.
             if is_in_pred:
                 tp += 1
             else:
