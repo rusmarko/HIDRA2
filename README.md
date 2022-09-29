@@ -53,7 +53,7 @@ Inputs to the HIDRA2 model are atmospheric, SSH and tidal data, each structured 
 
 | Name    | Shape   | Description                                                                                                                                                                                       |
 |---------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `atmos` | 96 × 3 × 9 × 12 | Hourly atmospheric forecasts from 24 h prior the prediction point to 72 h into the future. Second dimension contains pressure and two channels of wind. Last two dimensions are height and width. |
+| `atmos` | 96 × 3 × 9 × 12 | Hourly atmospheric forecasts from 24 h prior the prediction point to 72 h into the future. Second dimension contains pressure and two channels of wind. Last two dimensions are latitude and longitude. |
 | `ssh`   | 72      | Past SSH.                                                                                                                                                                                         |
 | `tide`  | 144     | Past and future tide.                                                                                                                                                                             |
 
