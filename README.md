@@ -14,7 +14,7 @@ predictions for all 50 ensembles on Jun 2019 – Dec 2020.
 
 ### Training and Evaluation Datasets
 
-We publish the entire training and evaluation datasets for HIDRA2 at the following link. To run
+We publish the entire training and evaluation datasets for HIDRA2 at [this link](https://doi.org/10.5281/zenodo.7123910). To run
 the following experiments, place the files into the `data` folder.
 
 ### Setup
