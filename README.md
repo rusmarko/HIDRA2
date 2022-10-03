@@ -26,6 +26,7 @@ Predictions of HIDRA2 on Jun 2019 – Dec 2020 are stored in the `data` folder.
 To evaluate them, run
 
 ```
+cd src
 python3 eval.py
 ```
 
@@ -33,6 +34,7 @@ To recalculate the predictions, download the test data from [this link](https://
 and run
 
 ```
+cd src
 python3 test.py
 ```
 
@@ -42,6 +44,7 @@ Pretrained weights are available in the `data` folder. To retrain the model, dow
 the training data from [this link](https://doi.org/10.5281/zenodo.7123910) and run
 
 ```
+cd src
 python3 train.py
 ```
 
