@@ -42,5 +42,5 @@ class Training:
 
             scheduler.step()
 
-        torch.save(self.net.state_dict(), f'{self.config.data_path}/HIDRA2 parameters.pth')
+        torch.save(self.net.state_dict(), f'{self.config.data_path}/HIDRA2_parameters.pth')
         print('Model weights saved to the data folder.')

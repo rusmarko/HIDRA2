@@ -40,7 +40,7 @@ class Train(Dataset):
 
 class Data:
     def __init__(self, config):
-        with open(f'{config.data_path}/data normalization parameters.yaml') as file:
+        with open(f'{config.data_path}/normalization_parameters.yaml') as file:
             self.norm = yaml.safe_load(file)
 
         self.train_lister = Train(config, self.norm)

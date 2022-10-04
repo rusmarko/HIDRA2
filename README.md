@@ -61,4 +61,4 @@ Inputs to the HIDRA2 model are atmospheric, SSH and tidal data, each structured 
 | `tide`  | 144     | Past and future tide.                                                                                                                                                                             |
 
 The model outputs 72 points representing hourly sea level forecast. 
-All inputs and output of HIDRA2 are normalized, the statistics are stored in `data/data normalization parameters.yaml`.
+All inputs and output of HIDRA2 are normalized, the statistics are stored in `data/normalization_parameters.yaml`.

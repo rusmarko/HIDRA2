@@ -8,12 +8,12 @@ data_path = '../data'
 
 test_data = torch.load(f'{data_path}/test.pth', map_location='cpu')
 
-with open(f'{data_path}/data normalization parameters.yaml') as file:
+with open(f'{data_path}/normalization_parameters.yaml') as file:
     norm = yaml.safe_load(file)
 
 # loading model
 hidra = HIDRA()
-hidra.load_state_dict(torch.load(f'{data_path}/HIDRA2 parameters.pth', map_location='cpu'))
+hidra.load_state_dict(torch.load(f'{data_path}/HIDRA2_parameters.pth', map_location='cpu'))
 hidra.eval()
 
 # making predictions
