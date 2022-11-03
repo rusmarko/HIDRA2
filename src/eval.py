@@ -5,40 +5,34 @@ import torch
 
 
 class Metrics:
-    def __init__(self, floods_thr=300):
+    def __init__(self, floods_thr=300, acc_thr=10):
         self.floods_thr = floods_thr
-        self.maes = self.rmses = self.bias = self.n = 0
-        self.ok = 0
+        self.acc_thr = acc_thr
 
-        self.acc_thr = 10
+        # overall
+        self.maes = self.rmses = self.bias = self.n = self.ok = 0
 
         # floods
-        self.fmaes = self.frmses = self.fbias = self.fn = 0
-        self.fok = 0
+        self.fmaes = self.frmses = self.fbias = self.fn = self.fok = 0
 
     def add(self, true, pred):
-        if type(true) == torch.Tensor:
-            true = true.item()
-        if type(pred) == torch.Tensor:
-            pred = pred.item()
-
-        self.maes += abs(true - pred)
-        self.rmses += (true - pred) ** 2
-        self.bias += pred - true
-        self.n += 1
-
-        if abs(true - pred) <= self.acc_thr:
-            self.ok += 1
+        """
+        :param true: Tensor containing 72 GT points.
+        :param pred: Tensor containing 72 predictions.
+        """
+        self.maes += torch.sum(torch.abs(true - pred)).item()
+        self.rmses += torch.sum(torch.square(true - pred)).item()
+        self.bias += torch.sum(pred - true).item()
+        self.ok += torch.sum(torch.abs(true - pred) <= self.acc_thr).item()
+        self.n += true.shape[0]
 
         # floods
-        if true >= self.floods_thr:
-            self.fmaes += abs(true - pred)
-            self.frmses += (true - pred) ** 2
-            self.fbias += pred - true
-            self.fn += 1
-
-            if abs(true - pred) <= self.acc_thr:
-                self.fok += 1
+        mask = true >= self.floods_thr
+        self.fmaes += torch.sum(torch.abs(true - pred) * mask).item()
+        self.frmses += torch.sum(torch.square(true - pred) * mask).item()
+        self.fbias += torch.sum((pred - true) * mask).item()
+        self.fok += torch.sum((torch.abs(true - pred) <= self.acc_thr) * mask).item()
+        self.fn += torch.sum(mask).item()
 
     def print(self):
         print(f'{self.n} points')
@@ -70,13 +64,12 @@ for time in predictions:
 
     pred = torch.mean(pred, dim=0)
 
-    for i in range(72):
-        metric.add(ground_truth[i], pred[i])
+    metric.add(ground_truth, pred)
 
 metric.print()
 
 
-def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
+def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300, prediction_horizon=72):
     """
     :param ssh: Dict containing hourly SSH measurements of all predicted time points.
     :param predictions: Dict containing predictions in the format:
@@ -86,6 +79,7 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
     :param tolerance: If prediction lies within the tolerance of ground truth (in cm), it is
             considered for the flood to be detected properly, even if prediction is below `floods_thr`.
     :param floods_thr: Local maximum of the SSH signal to be considered flood if above or equal to it (in cm).
+    :param prediction_horizon: Prediction horizon (in h).
     """
 
     times = sorted(list(ssh.keys()))
@@ -123,8 +117,8 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
         # Finding local maximums in the predicted signal.
         pred_peaks = {}
         pred_peaks_i = {}
-        for i in range(1, 71):  # Local maximum cannot be detected at the interval extremes.
-            time_temp = time + pd.to_timedelta(i, 'H')
+        for i in range(1, prediction_horizon - 1):  # Local maximum cannot be detected at the interval extremes.
+            time_temp = time + pd.to_timedelta(i, 'h')
             a = max(0, i - window)
             b = min(72, i + window + 1)
             if pred[i] == torch.max(pred[a:b]):
@@ -132,15 +126,16 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
                 pred_peaks_i[time_temp] = i
         gt_peaks = {}
         gt_peaks_i = {}
-        for i in range(-2 * window, 72 + 2 * window):  # Looking also around the prediction horizon (important for FP).
-            time_temp = time + pd.to_timedelta(i, 'H')
+        for i in range(-2 * window,
+                       prediction_horizon + 2 * window):  # Looking also around the prediction horizon (important for FP).
+            time_temp = time + pd.to_timedelta(i, 'h')
             if time_temp in peaks:
                 gt_peaks[time_temp] = ssh[time_temp]
                 gt_peaks_i[time_temp] = i
 
         # TP, FN
         for peak in gt_peaks:
-            if not (time <= peak < time + pd.to_timedelta(72, 'H')) or \
+            if not (time <= peak < time + pd.to_timedelta(prediction_horizon, 'h')) or \
                     gt_peaks[peak] < floods_thr:  # Here looking only at the peaks in the prediction horizon.
                 continue
 
@@ -148,7 +143,7 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
             is_in_pred = False
             thr = min(gt_peaks[peak] - tolerance, floods_thr)
             for i in range(-window, window + 1):
-                time_temp = peak + pd.to_timedelta(i, 'H')
+                time_temp = peak + pd.to_timedelta(i, 'h')
                 if time_temp in pred_peaks and pred_peaks[time_temp] >= thr:
                     is_in_pred = True
                     break
@@ -156,9 +151,9 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
             # The case when peak in the prediction signal is at the interval extremes.
             if not is_in_pred:
                 i = gt_peaks_i[peak]
-                if i < window or i >= 72 - window:
+                if i < window or i >= prediction_horizon - window:
                     a = max(0, i - window)
-                    b = min(72, i + window + 1)
+                    b = min(prediction_horizon, i + window + 1)
                     if torch.max(pred[a:b]) >= thr:
                         is_in_pred = True
 
@@ -175,7 +170,7 @@ def precision_recall(ssh, predictions, window=3, tolerance=10, floods_thr=300):
             is_in_gt = False
             thr = min(pred_peaks[peak] - tolerance, floods_thr)
             for i in range(-window, window + 1):
-                time_temp = peak + pd.to_timedelta(i, 'H')
+                time_temp = peak + pd.to_timedelta(i, 'h')
                 if time_temp in gt_peaks and gt_peaks[time_temp] >= thr:
                     is_in_gt = True
                     break
