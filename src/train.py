@@ -17,7 +17,7 @@ class Config():
 
         self.lr = .0001
         self.batch_size = 512
-        self.epochs = 60
+        self.epochs = 40
 
         self.num_workers = 4
         self.device = torch.device('cuda:0')

@@ -36,7 +36,7 @@ class Metrics:
 
     def print(self):
         print(f'{self.n} points')
-        print(f'{self.fn} / {self.n} ({self.fn / self.n * 100:.1f} %) floods')
+        print(f'{self.fn} / {self.n} ({self.fn / self.n * 100:.2f} %) floods')
         print()
         print(f'ALL: mae: {self.maes / self.n:.2f}, '
               f'rmse: {sqrt(self.rmses / self.n):.2f}, '
