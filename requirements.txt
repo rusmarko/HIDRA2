@@ -1,10 +1,4 @@
-torch
-torchvision
-matplotlib
-pyyaml
-opencv-python
-tqdm
-h5py
-tensorboard
-wandb
-pandas
+torch~=1.12.1
+pyyaml~=6.0
+tqdm~=4.64.1
+pandas~=1.5.0
