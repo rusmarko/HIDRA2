@@ -10,7 +10,7 @@ This repository contains the implementation of HIDRA2, and source code to
 train and evaluate the model. We also include HIDRA2 weights pretrained on 2006 – 2018 and
 predictions for all 50 ensembles on Jun 2019 – Dec 2020.
 
-![Qualitative example of sea level predictions (compared with NEMO, from 2020/10/14).](./images/qualitative_example-2020-10-14.png)
+![Qualitative example of sea level predictions (compared with NEMO, from 2020/10/14).](./images/qualitative_example-2020-10-15.png)
 
 ### Setup
 
@@ -30,7 +30,7 @@ cd src
 python3 eval.py
 ```
 
-To recalculate the predictions, download the test data from [this link](https://doi.org/10.5281/zenodo.7123910)
+To recalculate the predictions, download the test data from [this link](https://doi.org/10.5281/zenodo.7304086)
 and run
 
 ```
@@ -41,7 +41,7 @@ python3 test.py
 ### Training
 
 Pretrained weights are available in the `data` folder. To retrain the model, download
-the training data from [this link](https://doi.org/10.5281/zenodo.7123910) and run
+the training data from [this link](https://doi.org/10.5281/zenodo.7304086) and run
 
 ```
 cd src
