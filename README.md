@@ -6,9 +6,10 @@
 
 HIDRA2 is a state-of-the-art deep neural model for sea-level prediction based on past
 sea level observations and future tidal and atmospheric forecasts.
-This repository contains the implementation of HIDRA2, and source code to
+This repository contains the implementation of HIDRA2 and code to
 train and evaluate the model. We also include HIDRA2 weights pretrained on 2006 – 2018 and
-predictions for all 50 ensembles on Jun 2019 – Dec 2020.
+predictions for all 50 ensembles on Jun 2019 – Dec 2020. Training and test datasets are published at
+destinations listed below.
 
 ![Qualitative example of sea level predictions (compared with NEMO, from 2020/10/14).](./images/qualitative_example-2020-10-15.png)
 
