@@ -1,4 +1,4 @@
-## HIDRA2: Deep-Learning Ensemble Storm Surge Forecasting in the Presence of Seiches – the Case of Northern Adriatic
+## HIDRA2: Deep-Learning Ensemble Sea Level and Storm Tide Forecasting in the Presence of Seiches – the Case of Northern Adriatic
 
 <p align="center">
     <img src="images/logo.png" alt="HIDRA logo" width="300px">
