@@ -1,5 +1,7 @@
 ## HIDRA2: Deep-Learning Ensemble Sea Level and Storm Tide Forecasting in the Presence of Seiches – the Case of Northern Adriatic
 
+[`paper`](https://gmd.copernicus.org/articles/16/271/2023/) [`BibTeX`](#ref)
+
 <p align="center">
     <img src="images/logo.png" alt="HIDRA logo" width="300px">
 </p>
@@ -63,3 +65,22 @@ Inputs to the HIDRA2 model are atmospheric, SSH and tidal data, each structured 
 
 The model outputs 72 points representing hourly sea level forecast. 
 All inputs and output of HIDRA2 are normalized, the statistics are stored in `data/normalization_parameters.yaml`.
+
+### Publication
+
+<a name="ref"></a>Rus, M., Fettich, A., Kristan, M., and Ličer, M.: HIDRA2: deep-learning ensemble sea level and storm tide forecasting in the presence of seiches – the case of the northern Adriatic, Geosci. Model Dev., 16, 271–288, https://doi.org/10.5194/gmd-16-271-2023, 2023.
+
+Cite as:
+```
+@Article{gmd-16-271-2023,
+    AUTHOR = {Rus, M. and Fettich, A. and Kristan, M. and Li\v{c}er, M.},
+    TITLE = {HIDRA2: deep-learning ensemble sea level and storm tide forecasting in the presence of seiches -- the case of the northern Adriatic},
+    JOURNAL = {Geoscientific Model Development},
+    VOLUME = {16},
+    YEAR = {2023},
+    NUMBER = {1},
+    PAGES = {271--288},
+    URL = {https://gmd.copernicus.org/articles/16/271/2023/},
+    DOI = {10.5194/gmd-16-271-2023}
+}
+```
