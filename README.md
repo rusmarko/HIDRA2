@@ -1,6 +1,6 @@
 ## HIDRA2: Deep-Learning Ensemble Sea Level and Storm Tide Forecasting in the Presence of Seiches – the Case of Northern Adriatic
 
-[`paper`](https://doi.org/10.5194/gmd-16-271-2023) [`BibTeX`](#ref)
+[`paper`](https://doi.org/10.5194/gmd-16-271-2023) [`live demo`](https://rusmarko.github.io/HIDRA2-visualization/) [`BibTeX`](#ref)
 
 <p align="center">
     <img src="images/logo.png" alt="HIDRA logo" width="300px">
@@ -12,6 +12,10 @@ This repository contains the implementation of HIDRA2 and code to
 train and evaluate the model. We also include HIDRA2 weights pretrained on 2006 – 2018 and
 predictions for all 50 ensembles on Jun 2019 – Dec 2020. Training and test datasets are published at
 destinations listed below.
+
+### Demo
+Live forecast of the operational HIDRA2 model for the Koper Mareographic Station (northern Adriatic Sea)
+are visualized at: [rusmarko.github.io/HIDRA2-visualization](https://rusmarko.github.io/HIDRA2-visualization/en/).
 
 ![Qualitative example of sea level predictions (compared with NEMO, from 2020/10/14).](./images/qualitative_example-2020-10-15.png)
 
