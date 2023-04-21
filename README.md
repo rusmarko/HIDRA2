@@ -1,6 +1,6 @@
 ## HIDRA2: Deep-Learning Ensemble Sea Level and Storm Tide Forecasting in the Presence of Seiches – the Case of Northern Adriatic
 
-[`paper`](https://doi.org/10.5194/gmd-16-271-2023) [`live demo`](https://rusmarko.github.io/HIDRA2-visualization/) [`BibTeX`](#ref)
+[`paper`](https://doi.org/10.5194/gmd-16-271-2023) [`live demo`](https://lojzezust.github.io/hidra-visualization/) [`BibTeX`](#ref)
 
 <p align="center">
     <img src="images/logo.png" alt="HIDRA logo" width="300px">
