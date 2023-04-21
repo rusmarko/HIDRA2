@@ -15,7 +15,7 @@ destinations listed below.
 
 ### Demo
 Live forecast of the operational HIDRA2 model for the Koper Mareographic Station (northern Adriatic Sea)
-are visualized at: [rusmarko.github.io/HIDRA2-visualization](https://rusmarko.github.io/HIDRA2-visualization/en/).
+are visualized at: [lojzezust.github.io/hidra-visualization](https://lojzezust.github.io/hidra-visualization/).
 
 ![Qualitative example of sea level predictions (compared with NEMO, from 2020/10/14).](./images/qualitative_example-2020-10-15.png)
 
